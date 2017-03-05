@@ -11,7 +11,7 @@
 /* Example:                                                                   */
 /*    sX=75,Y=55e.  Handles +/-                                               */
 /* Command button data comes as follows:                                      */
-/*    sC=[cVal]e                                                              */
+/*    sC=[cValue]                                                              */
 /* Example:                                                                   */
 /*    sC=1e                                                                   */
 /*                                                                            */
@@ -49,16 +49,19 @@
 //
 char inData[20];
 byte index;
-int xVal = 0, xAdj = 0, yVal = 0, yAdj = 0, cVal = 1;
-int speedFactor = 1;
-int leftSpeed = 0, rightSpeed = 0;
-int leftDir = HIGH, rightDir = HIGH;
-int theta = 0, theta_norm = 0, theta_norm_old = 0, theta_norm_new = 0;
 boolean started = false;
 boolean ended = false;
 boolean receivingCommands = false;  // Dont send serial data when joystick being removed.
 int counter = 0;
 int delayVal = 50;
+int xVal = 0, xAdj = 0, yVal = 0, yAdj = 0, cVal = 1;
+int speedFactor = 1;
+int leftSpeed = 0, rightSpeed = 0;
+int leftDir = HIGH, rightDir = HIGH;
+// Use with positionServos v2:
+int theta = 0, theta_old = 0, theta_new = 0;
+// Use with positionServos v1:
+//int theta = 0, theta_norm = 0, theta_norm_old = 0, theta_norm_new = 0;
 Servo fLeft, fRight, rLeft, rRight;
 
 /*////////////////////////*/
@@ -182,7 +185,8 @@ void loop()
         yVal=0;
       }
       */
-      positionServos(xVal, yVal);
+      //positionServos(xVal, yVal); // Use with v1
+      positionServos(cVal);
       driveMotors(xVal, yVal);
       receivingCommands = false;
     }
@@ -209,6 +213,62 @@ void loop()
 /*//////////////////////////////*/
 /*  SERVO POSITIONING FUNCTION  */
 /*//////////////////////////////*/
+// v2 - Positions servos according to buttons
+void positionServos(int cVal)
+{
+  if(cVal == 1)
+  {
+    theta = 0;
+  }
+  else if(cVal == 2)
+  {
+    theta = 45;
+  }
+  else if(cVal == 3)
+  {
+    theta = 90;
+  }
+  else if(cVal == 4)
+  {
+    theta = 135;
+  }
+  else if(cVal == 5)
+  {
+    theta = 180;
+  }
+
+  theta_new = theta;
+  if((theta_new - theta_old) > 0)
+  {
+    for(theta = theta_old; theta = theta_new; theta++)
+    {
+      // Position servos to the desired angles
+      fLeft.write(theta + 7);
+      fRight.write(theta - 4);
+      rLeft.write(theta + 6);
+      rRight.write(theta - 6);
+      delay(5);
+    }
+  }
+  else
+  {
+    for(theta = theta_old; theta = theta_new; theta--)
+    {
+      // Position servos to the desired angles
+      fLeft.write(theta + 7);
+      fRight.write(theta - 4);
+      rLeft.write(theta + 6);
+      rRight.write(theta - 6);
+      delay(5);
+    }
+  }
+  theta_old = theta;
+}
+/*//////////////////////////////*/
+/*  SERVO POSITIONING FUNCTION  */
+/*//////////////////////////////*/
+// v1 - Positions servos according to joystick angles
+/*
 void positionServos(int xVal, int yVal)
 {
   theta = round(atan2(yVal,xVal)*180/3.14159265);
@@ -251,13 +311,14 @@ void positionServos(int xVal, int yVal)
   rLeft.write(theta_norm + 6);
   rRight.write(theta_norm - 6);
   delay(50);
-  /*
+
   // For debugging purposes
-  Serial.print(" Servos ");
-  Serial.println(theta_norm);
-  delay(15);
-  */
+  //Serial.print(" Servos ");
+  //Serial.println(theta_norm);
+  //delay(15);
+
 }
+*/
 
 /*//////////////////////////*/
 /*  MOTOR DRIVING FUNCTION  */
