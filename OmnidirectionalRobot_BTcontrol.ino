@@ -16,7 +16,7 @@
 /*    sC=1e                                                                   */
 /*                                                                            */
 /* Written By: Umur Ozhan SENGUL (umursengul@ieee.org)                        */
-/* Based on: http://www.plastibots.com/index.php/2013/03/07/btbotcontrol/     */
+/* Bluetooth: http://www.plastibots.com/index.php/2013/03/07/btbotcontrol/    */
 /*                                                                            */
 /******************************************************************************/
 
@@ -164,12 +164,12 @@ void loop()
     // printing debuggin statements.  Turn debugging on only to verify you are getting data and test a few values
 
     //output values to Serial Monitor
-    Serial.print("X=");
-    Serial.print(xVal);
-    Serial.print("  Y=");
-    Serial.print(yVal);
-    Serial.print("  C=");
-    Serial.print(cVal);
+    //Serial.print("X=");   // Debugging
+    //Serial.print(xVal);   // Debugging
+    //Serial.print("  Y="); // Debugging
+    //Serial.print(yVal);   // Debugging
+    //Serial.print("  C="); // Debugging
+    //Serial.print(cVal);   // Debugging
 
     if ((xVal !=0) || (yVal != 0))
     {
@@ -206,6 +206,9 @@ void loop()
 
 }
 
+/*//////////////////////////////*/
+/*  SERVO POSITIONING FUNCTION  */
+/*//////////////////////////////*/
 void positionServos(int xVal, int yVal)
 {
   theta = round(atan2(yVal,xVal)*180/3.14159265);
@@ -256,6 +259,9 @@ void positionServos(int xVal, int yVal)
   */
 }
 
+/*//////////////////////////*/
+/*  MOTOR DRIVING FUNCTION  */
+/*//////////////////////////*/
 void driveMotors(int xVal, int yVal)
 {
   float xPct=1.0;
@@ -304,22 +310,22 @@ void driveMotors(int xVal, int yVal)
 
   if (xVal < 0)
   {
-    //going left
+    // Going left
     leftSpeed = yAdj - abs(xAdj) ;
     rightSpeed = yAdj;
   }
   else
   {
-    //going right
+    // Going right
     leftSpeed = yAdj;
     rightSpeed = yAdj - abs(xAdj) ;
   }
 
-  //drive the motors
+  // Drive the motors
   analogWrite(leftMtrSpdPin, leftSpeed);
   analogWrite(rightMtrSpdPin, rightSpeed);
 
-  //slight delay
+  // Slight delay
   delay(delayVal);
   //Serial.println();
   leftSpeed=0, rightSpeed=0, xAdj=0, yAdj=0;
