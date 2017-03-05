@@ -238,6 +238,8 @@ void positionServos(int cVal)
   }
 
   theta_new = theta;
+  // Should I write servo angles for all servos differently since they
+  // have different angle requirements?
   if((theta_new - theta_old) > 0)
   {
     for(theta = theta_old; theta = theta_new; theta++)
@@ -264,6 +266,7 @@ void positionServos(int cVal)
   }
   theta_old = theta;
 }
+
 /*//////////////////////////////*/
 /*  SERVO POSITIONING FUNCTION  */
 /*//////////////////////////////*/
