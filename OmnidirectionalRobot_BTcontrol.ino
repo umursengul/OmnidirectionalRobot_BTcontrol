@@ -194,6 +194,7 @@ void loop()
     {
       //turn motors off
       //positionServos(0,1);
+      positionServos(cVal);
       analogWrite(leftMtrSpdPin, 0);
       analogWrite(rightMtrSpdPin, 0);
       receivingCommands = false;
@@ -242,27 +243,42 @@ void positionServos(int cVal)
   // have different angle requirements?
   if((theta_new - theta_old) > 0)
   {
-    for(theta = theta_old; theta = theta_new; theta++)
+    for(theta = theta_old; theta = theta_new; theta = theta + 5)
     {
       // Position servos to the desired angles
       fLeft.write(theta + 7);
       fRight.write(theta - 4);
-      rLeft.write(theta + 6);
+      rLeft.write(theta + 5);
       rRight.write(theta - 6);
-      delay(5);
+      delay(25);
+      break;
     }
+  }
+  else if((theta_new - theta_old) < 0)
+  {
+    for(theta = theta_old; theta = theta_new; theta = theta - 5)
+    {
+      // Position servos to the desired angles
+      fLeft.write(theta + 7);
+      fRight.write(theta - 4);
+      rLeft.write(theta + 5);
+      rRight.write(theta - 6);
+      delay(25);
+      break;
+    }
+  }
+  else if(theta_new = 0)
+  {
+    // Position servos to the desired angles
+    fLeft.write(0);
+    fRight.write(0);
+    rLeft.write(0);
+    rRight.write(0);
+    //delay(5);
   }
   else
   {
-    for(theta = theta_old; theta = theta_new; theta--)
-    {
-      // Position servos to the desired angles
-      fLeft.write(theta + 7);
-      fRight.write(theta - 4);
-      rLeft.write(theta + 6);
-      rRight.write(theta - 6);
-      delay(5);
-    }
+    theta_old = theta;
   }
   theta_old = theta;
 }
